@@ -1,0 +1,80 @@
+version: '3.2'
+
+services:
+  webserver:
+    image: nginx:mainline-alpine
+    container_name: webserver
+    restart: unless-stopped
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - ./nginx-conf:/etc/nginx/conf.d
+      # - web-root:/var/www/html
+      # - certbot-etc:/etc/letsencrypt
+      # - certbot-var:/var/lib/letsencrypt
+    depends_on:
+      - nodejs
+    networks:
+      - app-network
+  
+  mysql:
+    image: mysql
+    container_name: mysql
+    hostname: mysql
+    restart: always
+    volumes:
+      - ./data/db:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: "360mysql"
+      TZ: "Europe/Moscow"
+    ports:
+     - 3306:3306
+
+  adminer:
+    image: adminer
+    container_name: adminer
+    hostname: adminer
+    restart: always
+    ports:
+      - 8080:8080
+
+  nodejs:
+    build: ./node
+    container_name: nodejs
+    hostname: nodejs
+    command: npm run start
+    restart: unless-stopped
+    volumes:
+      - ./node:/node_app/
+    ports:
+      - 3333:3333
+      - 9229:9229
+    networks:
+      - app-network
+
+  # nodejs:
+  #   build: ./node
+  #   container_name: nodejs
+  #   # hostname: node1
+  #   command: npm run start
+  #   # command:
+  #   #   - bash -c 'npm run start'
+  #   # command:
+  #   #   - npm run dev
+  #   #   - -c
+  #   #   - |
+  #   #     bash -c 'pm2-runtime ./dist/api/main.js --node-args="--inspect=0.0.0.0:9229 --prof"'
+  #   restart: always
+  #   volumes:
+  #     - ./node:/node_app/
+  #   ports:
+  #     - 3333:3333
+  #     - 9229:9229
+  #   # environment:
+  #   #   - SENTRY_DSN=http://7933471b023443d792465a71284d4660:e57d824e65794e87b494abf25cfa5bc0@sentry.endpoint.biletix.ru/2
+    
+
+networks:
+  app-network:
+    driver: bridge
