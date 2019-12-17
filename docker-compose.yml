@@ -18,26 +18,26 @@ services:
     networks:
       - app-network
   
-  mysql:
-    image: mysql
-    container_name: mysql
-    hostname: mysql
-    restart: always
-    volumes:
-      - ./data/db:/var/lib/mysql
-    environment:
-      MYSQL_ROOT_PASSWORD: "360mysql"
-      TZ: "Europe/Moscow"
-    ports:
-     - 3306:3306
+  # mysql:
+  #   image: mysql
+  #   container_name: mysql
+  #   hostname: mysql
+  #   restart: always
+  #   volumes:
+  #     - ./data/db:/var/lib/mysql
+  #   environment:
+  #     MYSQL_ROOT_PASSWORD: "360mysql"
+  #     TZ: "Europe/Moscow"
+  #   ports:
+  #    - 3306:3306
 
-  adminer:
-    image: adminer
-    container_name: adminer
-    hostname: adminer
-    restart: always
-    ports:
-      - 8080:8080
+  # adminer:
+  #   image: adminer
+  #   container_name: adminer
+  #   hostname: adminer
+  #   restart: always
+  #   ports:
+  #     - 8080:8080
 
   nodejs:
     build: ./node
